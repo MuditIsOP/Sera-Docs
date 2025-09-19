@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 antialiased;
+  }
+}
+
+@layer components {
+  .chat-bubble {
+    @apply p-4 rounded-2xl max-w-[80%] shadow-sm;
+  }
+  
+  .chat-bubble-user {
+    @apply bg-primary-500 text-white ml-auto;
+  }
+  
+  .chat-bubble-assistant {
+    @apply bg-white border border-gray-200;
+  }
+  
+  .source-card {
+    @apply p-3 bg-gray-50 rounded-lg border border-gray-200 hover:border-primary-300 transition-colors cursor-pointer;
+  }
+}
