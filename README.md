@@ -58,7 +58,7 @@ You'll need a Google Gemini API key:
    ```
 
 4. **Access the application**
-   - Frontend: http://localhost
+   - Frontend: http://localhost:3000
    - Backend API: http://localhost:8000
    - API Documentation: http://localhost:8000/docs
 
