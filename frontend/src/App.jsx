@@ -5,6 +5,12 @@ import FileUpload from './components/FileUpload';
 import SourceViewer from './components/SourceViewer';
 import { FileText, MessageSquare, Upload, Moon, Sun, Trash2 } from 'lucide-react';
 
+/**
+ * The main application component.
+ * It orchestrates the entire UI, managing state for messages, file uploads,
+ * sources, and UI theme (dark/light mode).
+ * @returns {JSX.Element} The rendered App component.
+ */
 function App() {
   const [messages, setMessages] = useState([]);
   const [sources, setSources] = useState([]);
@@ -13,7 +19,11 @@ function App() {
   const [selectedSource, setSelectedSource] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
 
-  // Initialize dark mode from localStorage
+  /**
+   * Effect to initialize dark mode from localStorage on component mount.
+   * It checks for a saved 'darkMode' value and applies the 'dark' class
+   * to the document's root element if it's true.
+   */
   useEffect(() => {
     const savedDarkMode = localStorage.getItem('darkMode') === 'true';
     setDarkMode(savedDarkMode);
@@ -22,7 +32,9 @@ function App() {
     }
   }, []);
 
-  // Toggle dark mode
+  /**
+   * Toggles dark mode, updates the state, and persists the setting to localStorage.
+   */
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
@@ -34,8 +46,13 @@ function App() {
     }
   };
 
+  /**
+   * Handles sending a user's query to the backend API.
+   * Updates the message list with the user's message and the assistant's response.
+   * @param {string} query The user's query text.
+   */
   const handleQuery = async (query) => {
-    // Add user message
+    // Add user message to the chat immediately for better UX
     const userMessage = { id: Date.now(), text: query, role: 'user' };
     setMessages(prev => [...prev, userMessage]);
 
@@ -48,7 +65,7 @@ function App() {
 
       const data = await response.json();
       
-      // Add assistant message
+      // Add the assistant's response to the chat
       const assistantMessage = {
         id: Date.now() + 1,
         text: data.answer || 'No answer generated.',
@@ -69,6 +86,10 @@ function App() {
     }
   };
 
+  /**
+   * Sends a request to clear all ingested documents from the backend
+   * and resets the local state for uploaded files and messages.
+   */
   const clearAllFiles = async () => {
     if (!uploadedFiles.length) {
       alert('No files to clear');
@@ -89,7 +110,7 @@ function App() {
         setMessages([]);
         setSources([]);
         
-        // Add success message
+        // Display a system message confirming the action
         const successMessage = {
           id: Date.now(),
           text: "All cleared! Sera's library is now fresh and ready for new documents. ✨",
@@ -105,6 +126,12 @@ function App() {
     }
   };
 
+  /**
+   * Handles the upload of a single file to the backend.
+   * Updates the UI to reflect the upload status and adds a system message
+   * upon success or failure.
+   * @param {File} file The file to upload.
+   */
   const handleFileUpload = async (file) => {
     setIsUploading(true);
     const formData = new FormData();
@@ -125,7 +152,7 @@ function App() {
           chunks: data.chunks_created
         }]);
         
-        // Add success message
+        // Add a system message for successful upload
         const successMessage = {
           id: Date.now(),
           text: `Successfully uploaded ${file.name} (${data.chunks_created} chunks created)`,

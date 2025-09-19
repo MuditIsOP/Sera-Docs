@@ -3,8 +3,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Bot, User, FileText, Loader, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
-// Extracting MessageBubble outside the ChatInterface component prevents remounts
-// on every parent state change (e.g., input keystrokes), eliminating flicker.
+/**
+ * A memoized component to display a single message bubble.
+ * Memoization prevents re-renders on parent state changes (e.g., input keystrokes),
+ * which eliminates UI flicker and improves performance.
+ * @param {object} props - The component props.
+ * @param {object} props.message - The message object to display.
+ * @param {boolean} props.isSpeaking - Flag indicating if this message is currently being spoken.
+ * @param {boolean} props.hasSynth - Flag indicating if speech synthesis is available.
+ * @param {function(string): void} props.onSpeak - Callback to speak the message text.
+ * @param {function(object): void} props.onSourceClick - Callback when a source is clicked.
+ * @returns {JSX.Element} The rendered message bubble.
+ */
 const MessageBubble = React.memo(({ message, isSpeaking, hasSynth, onSpeak, onSourceClick }) => {
   const isUser = message.role === 'user';
   const isSystem = message.role === 'system';
@@ -86,167 +96,122 @@ const MessageBubble = React.memo(({ message, isSpeaking, hasSynth, onSpeak, onSo
   );
 });
 
+/**
+ * The main chat interface component.
+ * It manages the conversation flow, user input, and interactions with Web Speech APIs
+ * for voice input (SpeechRecognition) and text-to-speech (SpeechSynthesis).
+ * @param {object} props - The component props.
+ * @param {Array<object>} props.messages - The array of messages to display.
+ * @param {function(string): Promise<void>} props.onSendMessage - Callback to send a message.
+ * @param {function(object): void} props.onSourceClick - Callback when a source is clicked.
+ * @returns {JSX.Element} The rendered chat interface.
+ */
 const ChatInterface = ({ messages, onSendMessage, onSourceClick }) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
-  const messagesEndRef = useRef(null);
-  const recognitionRef = useRef(null);
-  const synthRef = useRef(null);
+  const messagesEndRef = useRef(null); // Ref to scroll to the end of messages
+  const recognitionRef = useRef(null); // Ref to store the SpeechRecognition instance
+  const synthRef = useRef(null); // Ref to store the SpeechSynthesis instance
 
-  // Initialize speech recognition and synthesis
+  // Effect to initialize Speech Recognition and Synthesis APIs on component mount.
   useEffect(() => {
-    // Check for speech recognition support
+    // Check for browser support for SpeechRecognition
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       try {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
-        recognition.continuous = false;  // Change to false for better compatibility
-        recognition.interimResults = false;  // Simpler approach
+        recognition.continuous = false;
+        recognition.interimResults = false;
         recognition.lang = 'en-US';
         recognition.maxAlternatives = 1;
 
         recognition.onresult = (event) => {
           const last = event.results.length - 1;
           const transcript = event.results[last][0].transcript;
-          
-          // Append the transcript to existing input
-          setInput(prevInput => {
-            // Add space if there's existing text
-            const separator = prevInput.length > 0 ? ' ' : '';
-            return prevInput + separator + transcript;
-          });
-          
-          console.log('Transcript received:', transcript);
+          setInput(prev => (prev ? `${prev} ` : '') + transcript);
         };
 
         recognition.onerror = (event) => {
           console.error('Speech recognition error:', event.error);
           setIsListening(false);
-          
-          if (event.error === 'no-speech') {
-            console.log('No speech was detected. Please try again.');
-          } else if (event.error === 'audio-capture') {
-            alert('No microphone found. Please ensure your microphone is connected.');
-          } else if (event.error === 'not-allowed') {
-            alert('Microphone access denied. Please allow microphone permissions and reload the page.');
-          } else if (event.error === 'network') {
-            alert('Network error. Please check your internet connection.');
-          } else if (event.error === 'aborted') {
-            console.log('Speech recognition aborted');
-          } else {
-            alert(`Speech recognition error: ${event.error}`);
+          // Provide user-friendly alerts for common errors
+          if (event.error === 'not-allowed') {
+            alert('Microphone access denied. Please allow microphone permissions in your browser settings.');
+          } else if (event.error === 'no-speech') {
+            console.log('No speech detected.');
           }
         };
 
-        recognition.onend = () => {
-          console.log('Recognition ended');
-          setIsListening(false);
-        };
-
-        recognition.onstart = () => {
-          console.log('Voice recognition activated. Speak now!');
-        };
-        
-        recognition.onspeechend = () => {
-          console.log('Speech ended');
-          recognition.stop();
-        };
-
+        recognition.onend = () => setIsListening(false);
         recognitionRef.current = recognition;
         setSpeechSupported(true);
-        console.log('Speech recognition initialized successfully');
       } catch (e) {
         console.error('Failed to initialize speech recognition:', e);
         setSpeechSupported(false);
       }
     } else {
-      console.log('Speech recognition not supported in this browser. Please use Chrome, Edge, or Safari.');
       setSpeechSupported(false);
     }
 
+    // Check for browser support for SpeechSynthesis
     if ('speechSynthesis' in window) {
       synthRef.current = window.speechSynthesis;
-      
-      // Load voices
-      const loadVoices = () => {
-        const voices = synthRef.current.getVoices();
-        if (voices.length > 0) {
-          console.log('Available voices:', voices.map(v => v.name));
-        }
-      };
-      
-      // Load voices immediately and on change
-      loadVoices();
+      // Pre-load voices
       if (synthRef.current.onvoiceschanged !== undefined) {
-        synthRef.current.onvoiceschanged = loadVoices;
+        synthRef.current.onvoiceschanged = () => synthRef.current.getVoices();
       }
     }
 
+    // Cleanup function to stop recognition and synthesis on unmount
     return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-      if (synthRef.current) {
-        synthRef.current.cancel();
-      }
+      recognitionRef.current?.stop();
+      synthRef.current?.cancel();
     };
   }, []);
 
+  /**
+   * Scrolls the message container to the bottom to show the latest message.
+   */
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Effect to scroll to bottom whenever messages array changes.
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  // Toggle voice input
+  /**
+   * Toggles the voice input (speech recognition).
+   * Starts listening if not already, or aborts if it is.
+   */
   const toggleVoiceInput = () => {
     if (!recognitionRef.current) {
-      alert('Voice input is not supported in your browser. Please use Chrome, Edge, or Safari.');
+      alert('Voice input is not supported in your browser.');
       return;
     }
 
     if (isListening) {
-      console.log('Stopping voice recognition...');
-      try {
-        recognitionRef.current.abort();  // Use abort instead of stop
-        setIsListening(false);
-      } catch (e) {
-        console.error('Error stopping recognition:', e);
-        setIsListening(false);
-      }
+      recognitionRef.current.abort();
     } else {
-      console.log('Starting voice recognition...');
-      setIsListening(true);
-      
-      // Small delay to ensure state is updated
-      setTimeout(() => {
-        try {
-          recognitionRef.current.start();
-          console.log('Recognition started');
-        } catch (e) {
-          console.error('Error starting recognition:', e);
-          setIsListening(false);
-          
-          if (e.message.includes('already started')) {
-            // If already started, stop and restart
-            recognitionRef.current.abort();
-            setTimeout(() => {
-              recognitionRef.current.start();
-            }, 100);
-          } else {
-            alert('Failed to start voice input. Please ensure:\n1. You are using Chrome, Edge, or Safari\n2. Microphone permissions are allowed\n3. The page is served over HTTPS or localhost');
-          }
-        }
-      }, 100);
+      try {
+        recognitionRef.current.start();
+        setIsListening(true);
+      } catch (e) {
+        console.error('Error starting recognition:', e);
+        alert('Could not start voice input. Please ensure microphone permissions are granted.');
+      }
     }
   };
 
-  // Speak message with female voice
+  /**
+   * Speaks the given text using the Web Speech Synthesis API.
+   * Attempts to use a female voice if available.
+   * @param {string} text - The text to be spoken.
+   */
   const speakMessage = (text) => {
     if (!synthRef.current) return;
 
@@ -257,56 +222,30 @@ const ChatInterface = ({ messages, onSendMessage, onSourceClick }) => {
     }
 
     const utterance = new SpeechSynthesisUtterance(text);
+    utterance.pitch = 1.1;
+    utterance.rate = 0.95;
     
-    // Set female voice properties
-    utterance.pitch = 1.1; // Slightly higher pitch for feminine voice
-    utterance.rate = 0.95; // Slightly slower for clarity
-    
-    // Try to select a female voice
+    // Attempt to find a suitable female voice
     const voices = synthRef.current.getVoices();
-    const femaleVoices = voices.filter(voice => 
-      voice.name.toLowerCase().includes('female') || 
-      voice.name.toLowerCase().includes('woman') ||
-      voice.name.toLowerCase().includes('zira') || // Microsoft female voice
-      voice.name.toLowerCase().includes('hazel') || // Microsoft female voice
-      voice.name.toLowerCase().includes('susan') || // Microsoft female voice
-      voice.name.toLowerCase().includes('linda') ||
-      voice.name.toLowerCase().includes('heather') ||
-      voice.name.toLowerCase().includes('catherine') ||
-      voice.name.toLowerCase().includes('samantha') || // macOS female voice
-      voice.name.toLowerCase().includes('victoria') || // macOS female voice
-      voice.name.toLowerCase().includes('allison') ||
-      voice.name.toLowerCase().includes('ava') ||
-      voice.name.toLowerCase().includes('susan') ||
-      voice.name.toLowerCase().includes('vicki') ||
-      voice.name.toLowerCase().includes('kathy') ||
-      voice.name.match(/\bfemale\b/i)
-    );
+    const femaleVoice = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female')) ||
+                        voices.find(v => v.lang.startsWith('en-US')); // Fallback to a default US English voice
     
-    // If female voice found, use it, otherwise try to find any English voice
-    if (femaleVoices.length > 0) {
-      utterance.voice = femaleVoices[0];
-    } else {
-      // Fallback to any female-sounding or English voice
-      const englishVoices = voices.filter(voice => 
-        voice.lang.startsWith('en') && 
-        !voice.name.toLowerCase().includes('male') &&
-        !voice.name.toLowerCase().includes('david') &&
-        !voice.name.toLowerCase().includes('mark') &&
-        !voice.name.toLowerCase().includes('james')
-      );
-      if (englishVoices.length > 0) {
-        utterance.voice = englishVoices[0];
-      }
+    if (femaleVoice) {
+      utterance.voice = femaleVoice;
     }
     
+    utterance.onstart = () => setIsSpeaking(true);
     utterance.onend = () => setIsSpeaking(false);
     utterance.onerror = () => setIsSpeaking(false);
     
-    setIsSpeaking(true);
     synthRef.current.speak(utterance);
   };
 
+  /**
+   * Handles the submission of the chat input form.
+   * It calls the onSendMessage prop and manages the loading state.
+   * @param {React.FormEvent} e - The form submission event.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;

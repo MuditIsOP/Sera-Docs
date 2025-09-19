@@ -3,7 +3,21 @@ import { useDropzone } from 'react-dropzone';
 import { motion } from 'framer-motion';
 import { Upload, File, AlertCircle } from 'lucide-react';
 
+/**
+ * A drag-and-drop file upload component.
+ * It uses react-dropzone to handle file selection and provides visual feedback
+ * for different states like idle, dragging, and uploading.
+ * @param {object} props - The component props.
+ * @param {function(File): Promise<void>} props.onFileUpload - Callback function to handle the actual upload of a file.
+ * @param {boolean} props.isUploading - Flag to indicate if an upload is currently in progress.
+ * @returns {JSX.Element} The rendered FileUpload component.
+ */
 const FileUpload = ({ onFileUpload, isUploading }) => {
+  /**
+   * Callback for the useDropzone hook.
+   * Triggered when files are dropped or selected. It handles rejected files
+   * and calls the onFileUpload prop for each accepted file sequentially.
+   */
   const onDrop = useCallback(async (acceptedFiles, rejectedFiles) => {
     if (rejectedFiles.length > 0) {
       alert(`File rejected: ${rejectedFiles[0].errors[0].message}`);
@@ -12,6 +26,7 @@ const FileUpload = ({ onFileUpload, isUploading }) => {
     
     if (acceptedFiles.length > 0) {
       // Upload files sequentially to reuse the existing single-file endpoint
+      // and provide a clear, ordered user experience.
       for (const file of acceptedFiles) {
         // Await to preserve order and avoid overlapping spinners/state
         // eslint-disable-next-line no-await-in-loop
@@ -20,6 +35,11 @@ const FileUpload = ({ onFileUpload, isUploading }) => {
     }
   }, [onFileUpload]);
 
+  /**
+   * react-dropzone hook configuration.
+   * Sets up accepted file types, size limits, and the onDrop callback.
+   * It provides the necessary props for the dropzone element.
+   */
   const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone({
     onDrop,
     accept: {

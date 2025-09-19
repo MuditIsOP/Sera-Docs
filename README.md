@@ -135,14 +135,13 @@ Start-Process powershell -ArgumentList "-NoExit","-Command","cd 'D:\Projects\RAG
 RAG/
 ├── backend/
 │   ├── app/
-│   │   ├── api/           # API endpoints
 │   │   ├── core/          # Core configuration
 │   │   ├── models/        # Pydantic models
 │   │   ├── services/      # Business logic
 │   │   │   ├── document_processor.py  # Document parsing
 │   │   │   ├── vector_store.py       # FAISS operations
 │   │   │   └── generation.py         # Gemini integration
-│   │   └── main.py        # FastAPI application
+│   │   └── main.py        # FastAPI application entry point
 │   ├── requirements.txt
 │   └── Dockerfile
 │
@@ -317,6 +316,14 @@ Contributions are welcome! Please follow these steps:
 3. Commit your changes
 4. Push to the branch
 5. Open a Pull Request
+
+### Documentation
+
+We value high-quality documentation. When contributing, please ensure that any new functions, classes, or components are fully documented.
+- **Backend (Python)**: Please use [Google Style Python Docstrings](https://google.github.io/styleguide/pyguide.html#3.8-comments-and-docstrings).
+- **Frontend (React)**: Please use [JSDoc](https://jsdoc.app/) comments for components and functions.
+
+A well-documented codebase is easier for everyone to understand and maintain.
 
 ## 📝 License
 
