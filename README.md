@@ -58,7 +58,7 @@ You'll need a Google Gemini API key:
    ```
 
 4. **Access the application**
-   - Frontend: http://localhost
+   - Frontend: http://localhost:3000
    - Backend API: http://localhost:8000
    - API Documentation: http://localhost:8000/docs
 
@@ -118,6 +118,16 @@ You'll need a Google Gemini API key:
 4. **Access the application**
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:8000
+
+#### Quick Start (Windows PowerShell)
+
+For Windows users, you can start both frontend and backend services with a single command:
+
+```powershell
+Start-Process powershell -ArgumentList "-NoExit","-Command","cd 'D:\Projects\RAG\frontend'; npm run dev"; Start-Sleep -Seconds 2; Start-Process powershell -ArgumentList "-NoExit","-Command","cd 'D:\Projects\RAG\backend'; if (!(Test-Path 'venv')) { python -m venv venv }; & .\venv\Scripts\Activate.ps1; pip install -r requirements.txt --disable-pip-version-check; python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+```
+
+**Note**: Update the path `D:\Projects\RAG` to match your actual project location.
 
 ## 📁 Project Structure
 
