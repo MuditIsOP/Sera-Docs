@@ -10,9 +10,21 @@ from app.core.config import settings
 
 
 class VectorStore:
-    """FAISS-based vector store for semantic search"""
+    """
+    A FAISS-based vector store for efficient semantic search.
+
+    This class manages the storage and retrieval of document chunks and their
+    corresponding vector embeddings. It handles embedding generation, indexing,
+    searching, and persistence to disk.
+    """
     
     def __init__(self):
+        """
+        Initializes the VectorStore.
+
+        This involves loading the sentence-transformer model, setting up the
+        FAISS index, and attempting to load an existing index from disk.
+        """
         self.embedding_model = SentenceTransformer(settings.embedding_model)
         self.dimension = self.embedding_model.get_sentence_embedding_dimension()
         self.index = faiss.IndexFlatL2(self.dimension)
@@ -24,7 +36,21 @@ class VectorStore:
         self.load()
     
     def add_documents(self, chunks: List[Dict[str, Any]]) -> int:
-        """Add document chunks to the vector store"""
+        """
+        Adds document chunks to the vector store.
+
+        This method generates embeddings for the provided text chunks, adds them
+        to the FAISS index, stores the associated metadata, and persists the
+        updated store to disk.
+
+        Args:
+            chunks (List[Dict[str, Any]]): A list of document chunks, where each
+                                           chunk is a dictionary containing at
+                                           least a "content" key.
+
+        Returns:
+            int: The number of chunks successfully added.
+        """
         if not chunks:
             return 0
             
@@ -46,7 +72,20 @@ class VectorStore:
         return len(chunks)
     
     def search(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
-        """Perform semantic search"""
+        """
+        Performs a semantic search for a given query.
+
+        It generates an embedding for the query, searches the FAISS index for
+        the most similar vectors, and returns the corresponding document chunks.
+
+        Args:
+            query (str): The search query text.
+            top_k (int): The maximum number of results to return.
+
+        Returns:
+            List[Dict[str, Any]]: A list of matching document chunks, each
+                                  enhanced with a 'similarity_score'.
+        """
         if self.index.ntotal == 0:
             return []
         
@@ -62,13 +101,14 @@ class VectorStore:
         for i, (dist, idx) in enumerate(zip(distances[0], indices[0])):
             if idx < len(self.documents):
                 result = self.documents[idx].copy()
-                result["similarity_score"] = float(1 / (1 + dist))  # Convert distance to similarity
+                # Convert L2 distance to a normalized similarity score (0-1)
+                result["similarity_score"] = float(1 / (1 + dist))
                 results.append(result)
         
         return results
     
     def save(self):
-        """Save the vector store to disk"""
+        """Saves the FAISS index and document metadata to disk."""
         # Save FAISS index
         faiss_path = self.storage_path / "faiss_index.bin"
         faiss.write_index(self.index, str(faiss_path))
@@ -79,7 +119,14 @@ class VectorStore:
             pickle.dump(self.documents, f)
     
     def load(self) -> bool:
-        """Load the vector store from disk"""
+        """
+        Loads the vector store from disk if it exists.
+
+        If loading fails, it resets the store to an empty state.
+
+        Returns:
+            bool: True if the store was loaded successfully, False otherwise.
+        """
         faiss_path = self.storage_path / "faiss_index.bin"
         docs_path = self.storage_path / "documents.pkl"
         
@@ -102,7 +149,11 @@ class VectorStore:
         return False
     
     def clear(self):
-        """Clear the vector store"""
+        """
+        Clears the vector store, both in memory and on disk.
+
+        Resets the FAISS index and document list, and deletes the saved files.
+        """
         self.index = faiss.IndexFlatL2(self.dimension)
         self.documents = []
         
@@ -116,7 +167,13 @@ class VectorStore:
             docs_path.unlink()
     
     def get_stats(self) -> Dict[str, Any]:
-        """Get statistics about the vector store"""
+        """
+        Gets statistics about the current state of the vector store.
+
+        Returns:
+            Dict[str, Any]: A dictionary containing statistics like the number
+                            of documents, index size, and model information.
+        """
         return {
             "total_documents": len(self.documents),
             "index_size": self.index.ntotal,
@@ -125,5 +182,5 @@ class VectorStore:
         }
 
 
-# Global instance
+# Global instance of the vector store, accessible throughout the application.
 vector_store = VectorStore()

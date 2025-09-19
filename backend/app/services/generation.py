@@ -4,9 +4,21 @@ from app.core.config import settings
 
 
 class GenerationService:
-    """Service for generating responses using Google Gemini"""
+    """
+    A service for generating responses using the Google Gemini API.
+
+    This class encapsulates the logic for interacting with the generative model,
+    including prompt engineering to give the AI a specific personality ("Sera").
+    """
     
     def __init__(self):
+        """
+        Initializes the GenerationService.
+
+        Configures the Google Generative AI client with the API key from settings.
+        If the API key is not provided, the model is not initialized, and a
+        warning is printed.
+        """
         if settings.gemini_api_key:
             genai.configure(api_key=settings.gemini_api_key)
             self.model = genai.GenerativeModel('gemini-2.5-flash')
@@ -20,7 +32,22 @@ class GenerationService:
         context_chunks: List[Dict[str, Any]],
         max_tokens: int = 1024
     ) -> str:
-        """Generate a response using Gemini with retrieved context"""
+        """
+        Generates an AI response based on a query and context.
+
+        This method constructs a detailed prompt, sends it to the Gemini API,
+        and returns the generated text. It handles cases where the API key
+        is not configured or an error occurs during generation.
+
+        Args:
+            query (str): The user's query.
+            context_chunks (List[Dict[str, Any]]): A list of context chunks
+                                                   retrieved from the vector store.
+            max_tokens (int): The maximum number of tokens for the response.
+
+        Returns:
+            str: The AI-generated response, or an error message.
+        """
         
         if not self.model:
             return "Gemini API key not configured. Please set GEMINI_API_KEY in your environment."
@@ -49,7 +76,16 @@ class GenerationService:
             return f"Error generating response: {str(e)}"
     
     def _format_context(self, chunks: List[Dict[str, Any]]) -> str:
-        """Format context chunks for the prompt"""
+        """
+        Formats a list of context chunks into a single string for the prompt.
+
+        Args:
+            chunks (List[Dict[str, Any]]): A list of document chunks.
+
+        Returns:
+            str: A formatted string containing the content of all chunks,
+                 each with a source citation.
+        """
         if not chunks:
             return "No relevant context found."
         
@@ -64,7 +100,18 @@ class GenerationService:
         return "\n".join(context_parts)
     
     def _create_prompt(self, query: str, context: str) -> str:
-        """Create the prompt for Gemini"""
+        """
+        Creates the final prompt string to be sent to the Gemini model.
+
+        This includes the persona, instructions, context, and the user query.
+
+        Args:
+            query (str): The user's question.
+            context (str): The formatted context string.
+
+        Returns:
+            str: The complete prompt for the language model.
+        """
         return f"""You are Sera, a warm, intelligent, and caring AI companion. You have a gentle, feminine personality - 
 think of yourself as a knowledgeable friend who's always happy to help. You're thoughtful, empathetic, and occasionally 
 add subtle touches of warmth to your responses (like using words such as "lovely", "wonderful", "dear" when appropriate).
@@ -94,5 +141,5 @@ Response Instructions:
 Your response:"""
 
 
-# Global instance
+# Global instance of the generation service.
 generation_service = GenerationService()

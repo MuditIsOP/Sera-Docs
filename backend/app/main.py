@@ -45,7 +45,14 @@ document_processor = DocumentProcessor()
 
 @app.get("/")
 async def root():
-    """Root endpoint"""
+    """
+    Provides basic application information.
+
+    This root endpoint can be used as a health check to confirm the API is running.
+
+    Returns:
+        dict: A dictionary containing the application name, version, and status.
+    """
     return {
         "name": settings.app_name,
         "version": settings.app_version,
@@ -55,7 +62,24 @@ async def root():
 
 @app.post("/api/upload", response_model=FileUploadResponse)
 async def upload_file(file: UploadFile = File(...)):
-    """Upload and ingest a document"""
+    """
+    Uploads, processes, and ingests a document into the vector store.
+
+    This endpoint validates the file type and size, saves the file temporarily,
+    processes it to extract text and create chunks, and then adds those chunks
+    to the vector store.
+
+    Args:
+        file (UploadFile): The document to be uploaded.
+
+    Returns:
+        FileUploadResponse: A response confirming the successful ingestion,
+                            including the number of chunks created.
+
+    Raises:
+        HTTPException: 400 for unsupported file types or oversized files.
+        HTTPException: 500 for internal errors during processing.
+    """
     
     # Validate file extension
     file_extension = file.filename.split(".")[-1].lower()
@@ -107,7 +131,20 @@ async def upload_file(file: UploadFile = File(...)):
 
 @app.post("/api/query", response_model=QueryResponse)
 async def query_documents(request: QueryRequest):
-    """Query the document store with semantic search and optional generation"""
+    """
+    Queries the knowledge base and returns a response.
+
+    Performs a semantic search on the vector store using the user's query.
+    If generation is enabled, it uses the search results as context to
+    generate a natural language answer.
+
+    Args:
+        request (QueryRequest): The user's query and search options.
+
+    Returns:
+        QueryResponse: The response containing the answer (if generated)
+                       and the source document chunks.
+    """
     
     # Perform semantic search
     search_results = vector_store.search(
@@ -144,7 +181,13 @@ async def query_documents(request: QueryRequest):
 
 @app.get("/api/status", response_model=IngestionStatus)
 async def get_status():
-    """Get the current status of the vector store"""
+    """
+    Retrieves the current status and statistics of the vector store.
+
+    Returns:
+        IngestionStatus: An object containing the total number of documents
+                         and chunks in the store.
+    """
     stats = vector_store.get_stats()
     
     return IngestionStatus(
@@ -156,7 +199,14 @@ async def get_status():
 
 @app.delete("/api/clear")
 async def clear_vector_store():
-    """Clear all documents from the vector store"""
+    """
+    Clears all data from the vector store and the upload directory.
+
+    This is a destructive operation and will remove all ingested knowledge.
+
+    Returns:
+        dict: A confirmation message.
+    """
     vector_store.clear()
     
     # Also clear uploaded files
@@ -169,7 +219,19 @@ async def clear_vector_store():
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request, exc):
-    """Custom exception handler"""
+    """
+    Custom exception handler for HTTPExceptions.
+
+    Ensures that all HTTPExceptions are returned as a consistent
+    JSON object with an "error" key.
+
+    Args:
+        request: The request that caused the exception.
+        exc (HTTPException): The raised exception.
+
+    Returns:
+        JSONResponse: A JSON response with the error details.
+    """
     return JSONResponse(
         status_code=exc.status_code,
         content={"error": exc.detail}

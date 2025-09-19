@@ -5,6 +5,28 @@ import json
 
 
 class Settings(BaseSettings):
+    """
+    Manages application settings using Pydantic's BaseSettings.
+
+    This class defines all the configuration parameters for the application.
+    It loads settings from environment variables and a `.env` file, providing
+    default values for each setting.
+
+    Attributes:
+        app_name (str): The name of the application.
+        app_version (str): The version of the application.
+        debug (bool): Flag to enable or disable debug mode.
+        gemini_api_key (str): The API key for Google Gemini.
+        cors_origins (List[str]): A list of allowed CORS origins.
+        embedding_model (str): The name of the sentence-transformer model for embeddings.
+        chunk_size (int): The size of text chunks for document processing.
+        chunk_overlap (int): The overlap size between text chunks.
+        top_k_results (int): The default number of search results to return.
+        max_file_size (int): The maximum allowed file size for uploads in bytes.
+        allowed_extensions (List[str]): A list of allowed file extensions for uploads.
+        host (str): The host address for the server to bind to.
+        port (int): The port for the server to listen on.
+    """
     # App
     app_name: str = Field(default="RAG Application")
     app_version: str = Field(default="1.0.0")
@@ -31,9 +53,22 @@ class Settings(BaseSettings):
     port: int = Field(default=8000)
     
     class Config:
+        """Pydantic model configuration."""
         env_file = ".env"
         
     def model_post_init(self, __context):
+        """
+        Post-initialization hook to process string-based list fields.
+
+        This method is automatically called by Pydantic after the model is
+        initialized. It checks if `cors_origins` or `allowed_extensions` have been
+        provided as a comma-separated string (common for environment variables)
+        and parses them into a proper list of strings. It also supports JSON-formatted
+        strings for `cors_origins`.
+
+        Args:
+            __context: The Pydantic context, not used here.
+        """
         # Parse CORS origins if they're a string
         if isinstance(self.cors_origins, str):
             try:
