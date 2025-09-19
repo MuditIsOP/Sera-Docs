@@ -1,6 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 import uuid
 import os
@@ -34,6 +35,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount static files (frontend)
+static_dir = Path("./static")
+if static_dir.exists():
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Create upload directory
 UPLOAD_DIR = Path("./data/uploads")
@@ -215,6 +221,31 @@ async def clear_vector_store():
             file_path.unlink()
     
     return {"message": "Vector store cleared successfully"}
+
+
+# Catch-all route to serve React app
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    """
+    Serve the React frontend for any non-API routes.
+    This allows React Router to handle client-side routing.
+    """
+    static_dir = Path("./static")
+    if static_dir.exists():
+        # Try to serve the file if it exists
+        file_path = static_dir / full_path
+        if file_path.exists() and file_path.is_file():
+            from fastapi.responses import FileResponse
+            return FileResponse(file_path)
+        
+        # For all other routes, serve index.html (React Router)
+        index_path = static_dir / "index.html"
+        if index_path.exists():
+            from fastapi.responses import FileResponse
+            return FileResponse(index_path)
+    
+    # Fallback to API response if no static files
+    return {"message": "Frontend not available"}
 
 
 @app.exception_handler(HTTPException)
