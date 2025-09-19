@@ -225,13 +225,42 @@ const ChatInterface = ({ messages, onSendMessage, onSourceClick }) => {
     utterance.pitch = 1.1;
     utterance.rate = 0.95;
     
-    // Attempt to find a suitable female voice
+    // Try to select a female voice
     const voices = synthRef.current.getVoices();
-    const femaleVoice = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female')) ||
-                        voices.find(v => v.lang.startsWith('en-US')); // Fallback to a default US English voice
+    const femaleVoices = voices.filter(voice =>
+      voice.name.toLowerCase().includes('female') ||
+      voice.name.toLowerCase().includes('woman') ||
+      voice.name.toLowerCase().includes('zira') || // Microsoft female voice
+      voice.name.toLowerCase().includes('hazel') || // Microsoft female voice
+      voice.name.toLowerCase().includes('susan') || // Microsoft female voice
+      voice.name.toLowerCase().includes('linda') ||
+      voice.name.toLowerCase().includes('heather') ||
+      voice.name.toLowerCase().includes('catherine') ||
+      voice.name.toLowerCase().includes('samantha') || // macOS female voice
+      voice.name.toLowerCase().includes('victoria') || // macOS female voice
+      voice.name.toLowerCase().includes('allison') ||
+      voice.name.toLowerCase().includes('ava') ||
+      voice.name.toLowerCase().includes('susan') ||
+      voice.name.toLowerCase().includes('vicki') ||
+      voice.name.toLowerCase().includes('kathy') ||
+      voice.name.match(/\bfemale\b/i)
+    );
     
-    if (femaleVoice) {
-      utterance.voice = femaleVoice;
+    // If female voice found, use it, otherwise try to find any English voice
+    if (femaleVoices.length > 0) {
+      utterance.voice = femaleVoices[0];
+    } else {
+      // Fallback to any female-sounding or English voice
+      const englishVoices = voices.filter(voice =>
+        voice.lang.startsWith('en') &&
+        !voice.name.toLowerCase().includes('male') &&
+        !voice.name.toLowerCase().includes('david') &&
+        !voice.name.toLowerCase().includes('mark') &&
+        !voice.name.toLowerCase().includes('james')
+      );
+      if (englishVoices.length > 0) {
+        utterance.voice = englishVoices[0];
+      }
     }
     
     utterance.onstart = () => setIsSpeaking(true);
