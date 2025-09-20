@@ -2,6 +2,19 @@
 
 A modern, production-ready RAG (Retrieval-Augmented Generation) application built with FastAPI, React, FAISS, and Google Gemini 2.5 Flash. Meet Sera, your warm and intelligent AI companion who helps you discover insights within your documents.
 
+## 🌐 Live Demo
+
+**✨ Try Sera Docs now - no installation required!**
+
+- **🚀 Live Application**: [https://muditisop.github.io/Sera-Docs/](https://muditisop.github.io/Sera-Docs/)
+- **🔧 Backend API**: [https://sera-docs.onrender.com/](https://sera-docs.onrender.com/)
+- **📚 API Documentation**: [https://sera-docs.onrender.com/docs](https://sera-docs.onrender.com/docs)
+
+### Deployment Information
+- **Frontend**: Deployed on GitHub Pages
+- **Backend**: Deployed on Render (auto-deploys from main branch)
+- **Status**: ✅ Fully operational with file upload fixes implemented
+
 ## 🌸 Features
 
 - **Multi-File Upload**: Support for PDF, DOCX, PPTX, TXT, CSV, and HTML files with batch processing
@@ -58,8 +71,9 @@ You'll need a Google Gemini API key:
    ```
 
 4. **Access the application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8000
+   - **🌐 Live Demo**: [https://muditisop.github.io/Sera-Docs/](https://muditisop.github.io/Sera-Docs/)
+   - Local Frontend: http://localhost:3000
+   - Local Backend API: http://localhost:8000
    - API Documentation: http://localhost:8000/docs
 
 ### Local Development Setup
@@ -116,8 +130,9 @@ You'll need a Google Gemini API key:
    ```
 
 4. **Access the application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8000
+   - **🌐 Live Demo**: [https://muditisop.github.io/Sera-Docs/](https://muditisop.github.io/Sera-Docs/)
+   - Local Frontend: http://localhost:3000
+   - Local Backend API: http://localhost:8000
 
 #### Quick Start (Windows PowerShell)
 
@@ -273,13 +288,45 @@ CORS_ORIGINS=["http://localhost:3000", "http://localhost:5173"]
 
 ### API Documentation
 
-Visit `http://localhost:8000/docs` for interactive API documentation (Swagger UI).
+- **🌐 Live API Docs**: [https://sera-docs.onrender.com/docs](https://sera-docs.onrender.com/docs) (Interactive Swagger UI)
+- **Local API Docs**: Visit `http://localhost:8000/docs` for local development
 
 ### Query Parameters
 
 - `query` (string): Your question
 - `top_k` (int, optional): Number of relevant chunks to retrieve (default: 5)
 - `use_generation` (bool, optional): Enable AI response generation (default: true)
+
+## 🚀 Deployment
+
+### Production Deployment
+
+This project is currently deployed and running live:
+
+- **Frontend**: GitHub Pages at [https://muditisop.github.io/Sera-Docs/](https://muditisop.github.io/Sera-Docs/)
+- **Backend**: Render at [https://sera-docs.onrender.com/](https://sera-docs.onrender.com/)
+
+### Deployment Architecture
+
+1. **Frontend (GitHub Pages)**
+   - Automatic deployment from main branch
+   - Static React build served via GitHub Pages
+   - Custom domain support available
+
+2. **Backend (Render)**
+   - Auto-deployment from GitHub repository
+   - Environment variables configured in Render dashboard
+   - Automatic HTTPS and scaling
+
+### Environment Variables (Production)
+
+For production deployment, ensure these environment variables are set:
+
+```env
+GEMINI_API_KEY=your_production_key
+CORS_ORIGINS=["https://muditisop.github.io"]
+MAX_FILE_SIZE=52428800  # 50MB
+```
 
 ## 🐛 Troubleshooting
 
@@ -341,12 +388,13 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 📧 Support
 
-For issues, questions, or suggestions, please open an issue on GitHub or contact the maintainers.
+For issues, questions, or suggestions:
+- **🌐 Live Demo**: [https://muditisop.github.io/Sera-Docs/](https://muditisop.github.io/Sera-Docs/)
+- **GitHub Issues**: Open an issue on this repository
+- **API Status**: Check [https://sera-docs.onrender.com/](https://sera-docs.onrender.com/) for backend health
 
 ---
 
-#   U p d a t e d   f o r   R e n d e r   b a c k e n d   d e p l o y m e n t  
- #   B a c k e n d   d e p l o y e d   o n   R e n d e r   -   0 9 / 2 0 / 2 0 2 5   1 1 : 1 7 : 0 0  
- #   B a c k e n d   c o n n e c t e d :   h t t p s : / / s e r a - d o c s . o n r e n d e r . c o m  
- #   F r o n t e n d   r e s t a r t   -   0 9 / 2 0 / 2 0 2 5   1 1 : 3 3 : 2 3  
- 
+**🎉 Sera Docs is live and ready to help you explore your documents!**
+
+*Last updated: September 2025 - File upload fixes implemented and deployed*
