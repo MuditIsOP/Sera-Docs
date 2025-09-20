@@ -7,13 +7,17 @@ WORKDIR /app/frontend
 
 # Copy package files
 COPY frontend/package*.json ./
-RUN npm ci
+RUN npm ci --only=production
 
 # Copy frontend source code
 COPY frontend/ ./
 
 # Build the React application
 RUN npm run build
+
+# Debug: List built files
+RUN ls -la /app/frontend/dist/
+RUN echo "Frontend build completed successfully"
 
 # Stage 2: Backend with Frontend
 FROM python:3.11-slim
