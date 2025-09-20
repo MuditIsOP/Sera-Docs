@@ -45,7 +45,7 @@ class Settings(BaseSettings):
     top_k_results: int = Field(default=5)
     
     # File Upload
-    max_file_size: int = Field(default=10485760)  # 10MB
+    max_file_size: int = Field(default=52428800)  # 50MB
     allowed_extensions: List[str] = Field(default=["pdf", "docx", "pptx", "txt", "csv", "html"])
     
     # Server
