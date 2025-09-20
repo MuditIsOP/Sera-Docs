@@ -3,9 +3,16 @@ const API_BASE_URL = 'https://sera-docs.onrender.com';
 
 export const apiCall = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
+  
+  // Don't set Content-Type for FormData - let browser set it with boundary
+  const headers = {};
+  if (!(options.body instanceof FormData)) {
+    headers['Content-Type'] = 'application/json';
+  }
+  
   return fetch(url, {
     headers: {
-      'Content-Type': 'application/json',
+      ...headers,
       ...options.headers,
     },
     ...options,
