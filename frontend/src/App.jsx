@@ -4,6 +4,7 @@ import ChatInterface from './components/ChatInterface';
 import FileUpload from './components/FileUpload';
 import SourceViewer from './components/SourceViewer';
 import { FileText, MessageSquare, Upload, Moon, Sun, Trash2 } from 'lucide-react';
+import { apiCall, apiEndpoints } from './utils/api';
 
 /**
  * The main application component.
@@ -57,9 +58,8 @@ function App() {
     setMessages(prev => [...prev, userMessage]);
 
     try {
-      const response = await fetch('/api/query', {
+      const response = await apiCall(apiEndpoints.query, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, top_k: 5, use_generation: true })
       });
 
@@ -101,7 +101,7 @@ function App() {
     }
 
     try {
-      const response = await fetch('/api/clear', {
+      const response = await apiCall(apiEndpoints.clear, {
         method: 'DELETE',
       });
 
@@ -138,7 +138,7 @@ function App() {
     formData.append('file', file);
 
     try {
-      const response = await fetch('/api/upload', {
+      const response = await apiCall(apiEndpoints.upload, {
         method: 'POST',
         body: formData
       });
