@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     gemini_api_key: str = Field(default="")
     
     # CORS
-    cors_origins: List[str] = Field(default=["http://localhost:3000", "http://localhost:5173"])
+    cors_origins: List[str] = Field(default=["http://localhost:3000", "http://localhost:5173", "https://muditisop.github.io"])
     
     # Vector Store
     embedding_model: str = Field(default="all-MiniLM-L6-v2")
