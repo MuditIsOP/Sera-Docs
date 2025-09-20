@@ -87,8 +87,22 @@ async def upload_file(file: UploadFile = File(...)):
         HTTPException: 500 for internal errors during processing.
     """
     
+    
     # Validate file extension
-    file_extension = file.filename.split(".")[-1].lower()
+    if not file.filename:
+        raise HTTPException(
+            status_code=422, 
+            detail="No filename provided"
+        )
+    
+    filename_parts = file.filename.split(".")
+    if len(filename_parts) < 2:
+        raise HTTPException(
+            status_code=422, 
+            detail="File must have an extension"
+        )
+    
+    file_extension = filename_parts[-1].lower()
     if file_extension not in settings.allowed_extensions:
         raise HTTPException(
             status_code=400,
@@ -97,11 +111,18 @@ async def upload_file(file: UploadFile = File(...)):
     
     # Validate file size
     contents = await file.read()
+    if len(contents) == 0:
+        raise HTTPException(
+            status_code=422,
+            detail="File is empty"
+        )
+    
     if len(contents) > settings.max_file_size:
         raise HTTPException(
             status_code=400,
             detail=f"File size exceeds maximum of {settings.max_file_size / 1024 / 1024:.1f}MB"
         )
+
     
     # Save file
     file_id = str(uuid.uuid4())
