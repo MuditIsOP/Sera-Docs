@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/Sera-Docs/', // GitHub Pages subdirectory
+  base: '/Sera-Docs/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
