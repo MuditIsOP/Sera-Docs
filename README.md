@@ -1,400 +1,368 @@
-# Sera Docs - Your Knowledge Companion
+# 🌟 Sera Docs
 
-A modern, production-ready RAG (Retrieval-Augmented Generation) application built with FastAPI, React, FAISS, and Google Gemini 2.5 Flash. Meet Sera, your warm and intelligent AI companion who helps you discover insights within your documents.
+<div align="center">
 
-## 🌐 Live Demo
+![Sera Logo](https://img.shields.io/badge/Sera-Docs-6366f1?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMiA3TDEyIDEyTDIyIDdMMTIgMloiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0yIDEyTDEyIDE3TDIyIDEyIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4=)
 
-**✨ Try Sera Docs now - no installation required!**
+**Transform your codebase into beautiful, AI-powered documentation instantly**
 
-- **🚀 Live Application**: [https://muditisop.github.io/Sera-Docs/](https://muditisop.github.io/Sera-Docs/)
-- **🔧 Backend API**: [https://sera-docs.onrender.com/](https://sera-docs.onrender.com/)
-- **📚 API Documentation**: [https://sera-docs.onrender.com/docs](https://sera-docs.onrender.com/docs)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
 
-### Deployment Information
-- **Frontend**: Deployed on GitHub Pages
-- **Backend**: Deployed on Render (auto-deploys from main branch)
-- **Status**: ✅ Fully operational with file upload fixes implemented
+[🚀 Live Demo](https://sera-docs.vercel.app) • [📖 Documentation](https://sera-docs.vercel.app/docs) • [🐛 Report Bug](https://github.com/MuditIsOP/Sera-Docs/issues) • [✨ Request Feature](https://github.com/MuditIsOP/Sera-Docs/issues)
 
-## 🌸 Features
+</div>
 
-- **Multi-File Upload**: Support for PDF, DOCX, PPTX, TXT, CSV, and HTML files with batch processing
-- **Smart Chunking**: Automatic text splitting with configurable chunk size and overlap
-- **Semantic Search**: FAISS-powered vector search with sentence-transformers embeddings
-- **AI Generation**: Google Gemini 2.5 Flash integration with Sera's warm, feminine personality
-- **Voice Features**: Speech-to-text input and text-to-speech output with female voice selection
-- **Modern UI**: React + Tailwind CSS + Framer Motion with dark mode support
-- **Drag & Drop**: Intuitive multi-file upload interface
-- **Source Citations**: View exact document chunks used for generating answers
-- **Real-time Chat**: Smooth, flicker-free chat interface with message history
-- **Docker Ready**: Complete containerization with docker-compose
+---
 
-## 📋 Prerequisites
+## 🎯 What is Sera Docs?
 
-- **Option 1: Docker** (Recommended)
-  - Docker Desktop installed
-  - Docker Compose
+Sera Docs is an **AI-powered documentation generator** that transforms your GitHub repositories into comprehensive, searchable, and beautiful documentation websites. No more manual documentation writing—let AI do the heavy lifting while you focus on building great software.
 
-- **Option 2: Local Development**
-  - Python 3.11+
-  - Node.js 18+
-  - npm or yarn
-
-## 🔑 API Keys
-
-You'll need a Google Gemini API key:
-1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Generate an API key
-3. Copy it for the setup
-
-## 🛠️ Installation
-
-### Using Docker (Recommended)
-
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd RAG
-   ```
-
-2. **Set up environment variables**
-   ```bash
-   # Copy the example env file
-   cp .env.example .env
-   
-   # Edit .env and add your Gemini API key
-   # GEMINI_API_KEY=your_actual_api_key_here
-   ```
-
-3. **Build and run with Docker Compose**
-   ```bash
-   docker-compose up --build
-   ```
-
-4. **Access the application**
-   - **🌐 Live Demo**: [https://muditisop.github.io/Sera-Docs/](https://muditisop.github.io/Sera-Docs/)
-   - Local Frontend: http://localhost:3000
-   - Local Backend API: http://localhost:8000
-   - API Documentation: http://localhost:8000/docs
-
-### Local Development Setup
-
-#### Backend Setup
-
-1. **Navigate to backend directory**
-   ```bash
-   cd backend
-   ```
-
-2. **Create Python virtual environment**
-   ```bash
-   python -m venv venv
-   
-   # Windows
-   venv\Scripts\activate
-   
-   # Linux/Mac
-   source venv/bin/activate
-   ```
-
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Set up environment variables**
-   ```bash
-   cp .env.example .env
-   # Edit .env and add your GEMINI_API_KEY
-   ```
-
-5. **Run the backend**
-   ```bash
-   uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-   ```
-
-#### Frontend Setup
-
-1. **Navigate to frontend directory**
-   ```bash
-   cd frontend
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Run the development server**
-   ```bash
-   npm run dev
-   ```
-
-4. **Access the application**
-   - **🌐 Live Demo**: [https://muditisop.github.io/Sera-Docs/](https://muditisop.github.io/Sera-Docs/)
-   - Local Frontend: http://localhost:3000
-   - Local Backend API: http://localhost:8000
-
-#### Quick Start (Windows PowerShell)
-
-For Windows users, you can start both frontend and backend services with a single command:
-
-```powershell
-Start-Process powershell -ArgumentList "-NoExit","-Command","cd 'D:\Projects\RAG\frontend'; npm run dev"; Start-Sleep -Seconds 2; Start-Process powershell -ArgumentList "-NoExit","-Command","cd 'D:\Projects\RAG\backend'; if (!(Test-Path 'venv')) { python -m venv venv }; & .\venv\Scripts\Activate.ps1; pip install -r requirements.txt --disable-pip-version-check; python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+```mermaid
+graph LR
+    A[GitHub Repository] -->|Clone| B[Sera Docs]
+    B -->|AI Analysis| C[Documentation Engine]
+    C -->|Generate| D[Beautiful Docs Site]
+    D -->|Deploy| E[Live Website]
+    style B fill:#6366f1,stroke:#4f46e5,stroke-width:3px,color:#fff
+    style C fill:#8b5cf6,stroke:#7c3aed,stroke-width:2px,color:#fff
+    style D fill:#06b6d4,stroke:#0891b2,stroke-width:2px,color:#fff
 ```
 
-**Note**: Update the path `D:\Projects\RAG` to match your actual project location.
+---
+
+## ✨ Features
+
+<table>
+<tr>
+<td width="50%">
+
+### 🤖 **AI-Powered Intelligence**
+- Automatic code analysis and documentation generation
+- Context-aware explanations
+- Smart code structure understanding
+- Natural language processing for better docs
+
+</td>
+<td width="50%">
+
+### 🎨 **Beautiful UI**
+- Modern, responsive design
+- Dark/Light mode support
+- Syntax highlighting
+- Interactive code examples
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 🔍 **Advanced Search**
+- Full-text search across all docs
+- Instant results
+- Search syntax highlighting
+- Command palette (⌘+K)
+
+</td>
+<td width="50%">
+
+### 🚀 **Developer Experience**
+- One-command deployment
+- Hot reload in development
+- TypeScript support
+- Zero configuration
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🏗️ Architecture
+
+```mermaid
+flowchart TD
+    subgraph Client["🎨 Frontend (Next.js)"]
+        A[User Interface]
+        B[Search Component]
+        C[Doc Renderer]
+    end
+    
+    subgraph Server["⚙️ Backend Services"]
+        D[API Routes]
+        E[GitHub Integration]
+        F[AI Processing]
+    end
+    
+    subgraph Storage["💾 Data Layer"]
+        G[Supabase DB]
+        H[Vector Store]
+        I[File System]
+    end
+    
+    A --> D
+    B --> D
+    C --> D
+    D --> E
+    D --> F
+    E --> G
+    F --> H
+    F --> I
+    
+    style Client fill:#6366f1,stroke:#4f46e5,stroke-width:2px,color:#fff
+    style Server fill:#8b5cf6,stroke:#7c3aed,stroke-width:2px,color:#fff
+    style Storage fill:#06b6d4,stroke:#0891b2,stroke-width:2px,color:#fff
+```
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+- A GitHub account
+- Anthropic API key (for AI features)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/MuditIsOP/Sera-Docs.git
+
+# Navigate to the project directory
+cd Sera-Docs
+
+# Install dependencies
+npm install
+# or
+yarn install
+
+# Set up environment variables
+cp .env.example .env.local
+```
+
+### Configuration
+
+Create a `.env.local` file with the following variables:
+
+```env
+# GitHub Configuration
+GITHUB_TOKEN=your_github_personal_access_token
+
+# AI Configuration
+ANTHROPIC_API_KEY=your_anthropic_api_key
+
+# Database (Supabase)
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# Optional: Custom Configuration
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### Run Development Server
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to see your app! 🎉
+
+---
+
+## 📖 How It Works
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant S as Sera Docs
+    participant G as GitHub API
+    participant A as AI Engine
+    participant D as Database
+
+    U->>S: Enter GitHub repo URL
+    S->>G: Fetch repository data
+    G-->>S: Return code & structure
+    S->>A: Send code for analysis
+    A-->>S: Generate documentation
+    S->>D: Store documentation
+    D-->>S: Confirm storage
+    S-->>U: Display generated docs
+```
+
+### Step-by-Step Process
+
+1. **Repository Input**: User provides a GitHub repository URL
+2. **Code Analysis**: Sera fetches and analyzes the codebase structure
+3. **AI Generation**: Claude AI processes the code and generates comprehensive documentation
+4. **Smart Organization**: Documentation is automatically organized by file structure
+5. **Search Indexing**: Content is indexed for lightning-fast search
+6. **Deployment**: Documentation is served through a beautiful, responsive interface
+
+---
+
+## 🛠️ Tech Stack
+
+<div align="center">
+
+| Category | Technologies |
+|----------|-------------|
+| **Frontend** | Next.js 14, React, TypeScript, Tailwind CSS |
+| **Backend** | Next.js API Routes, Node.js |
+| **AI/ML** | Anthropic Claude API, Vector Embeddings |
+| **Database** | Supabase (PostgreSQL) |
+| **Authentication** | NextAuth.js |
+| **Deployment** | Vercel |
+| **Code Analysis** | Tree-sitter, AST Parsing |
+
+</div>
+
+---
 
 ## 📁 Project Structure
 
 ```
-RAG/
-├── backend/
-│   ├── app/
-│   │   ├── core/          # Core configuration
-│   │   ├── models/        # Pydantic models
-│   │   ├── services/      # Business logic
-│   │   │   ├── document_processor.py  # Document parsing
-│   │   │   ├── vector_store.py       # FAISS operations
-│   │   │   └── generation.py         # Gemini integration
-│   │   └── main.py        # FastAPI application entry point
-│   ├── requirements.txt
-│   └── Dockerfile
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/    # React components
-│   │   │   ├── ChatInterface.jsx    # Main chat UI
-│   │   │   ├── FileUpload.jsx      # Drag-drop upload
-│   │   │   └── SourceViewer.jsx    # Citation viewer
-│   │   ├── App.jsx        # Main application
-│   │   └── main.jsx       # Entry point
-│   ├── package.json
-│   └── Dockerfile
-│
-├── docker-compose.yml     # Docker orchestration
-└── README.md
+Sera-Docs/
+├── 📂 app/                    # Next.js 14 App Router
+│   ├── 📂 api/               # API routes
+│   ├── 📂 docs/              # Documentation pages
+│   └── 📂 dashboard/         # User dashboard
+├── 📂 components/            # React components
+│   ├── 📂 ui/               # UI components
+│   ├── 📂 docs/             # Doc-specific components
+│   └── 📂 search/           # Search components
+├── 📂 lib/                   # Utility functions
+│   ├── 📂 ai/               # AI integration
+│   ├── 📂 github/           # GitHub API
+│   └── 📂 db/               # Database utilities
+├── 📂 public/                # Static assets
+└── 📂 types/                 # TypeScript types
 ```
-
-## 🔧 Configuration
-
-### Backend Configuration (`.env`)
-
-```env
-# Required
-GEMINI_API_KEY=your_key_here
-
-# Optional (with defaults)
-EMBEDDING_MODEL=all-MiniLM-L6-v2
-CHUNK_SIZE=500
-CHUNK_OVERLAP=100
-TOP_K_RESULTS=5
-MAX_FILE_SIZE=10485760  # 10MB
-CORS_ORIGINS=["http://localhost:3000", "http://localhost:5173"]
-```
-
-### Response Generation Limits
-
-- **Default max tokens**: 2048 tokens per response
-- **Configurable**: Modify `max_tokens` in `backend/app/main.py` line 135
-- **Model**: Google Gemini 2.5 Flash
-
-### Supported File Types
-
-- **Documents**: PDF, DOCX, PPTX
-- **Text**: TXT, CSV
-- **Web**: HTML
-
-## 📊 Architecture
-
-### Backend Components
-
-1. **Document Processor**
-   - Extracts text from various file formats
-   - Splits text into overlapping chunks
-   - Maintains metadata for source tracking
-
-2. **Vector Store (FAISS)**
-   - Generates embeddings using sentence-transformers
-   - Stores vectors in FAISS index
-   - Performs semantic similarity search
-
-3. **Generation Service**
-   - Integrates with Google Gemini API
-   - Creates context-aware prompts
-   - Generates answers with citations
-
-### Frontend Components
-
-1. **Chat Interface**
-   - Real-time message display with smooth animations
-   - Voice input/output with speech recognition
-   - Memoized components to prevent flickering
-   - Loading states and error handling
-
-2. **File Upload**
-   - Multi-file drag-and-drop support
-   - Sequential file processing
-   - File validation and size limits
-   - Upload progress indication
-
-3. **Source Viewer**
-   - Modal display of source chunks
-   - Metadata visualization
-   - Similarity scores
-
-4. **UI Features**
-   - Dark/light mode toggle
-   - Responsive design
-   - Framer Motion animations
-   - Local storage for preferences
-
-## 🚀 Usage
-
-1. **Upload Documents**
-   - Drag and drop multiple files into the upload area
-   - Or click to select one or more files
-   - Files are processed sequentially with progress indication
-   - Wait for processing confirmation
-
-2. **Ask Questions**
-   - Type your question in the chat interface
-   - Use voice input (microphone button) for speech-to-text
-   - Press Enter or click Send
-   - View Sera's warm, AI-generated answers with sources
-
-3. **Voice Features**
-   - Click the microphone to start voice input (Chrome/Edge/Safari)
-   - Click the speaker icon to hear responses read aloud
-   - Female voice selection for natural conversation
-
-4. **Review Sources**
-   - Click on source citations below answers
-   - View the exact text chunks used
-   - Check similarity scores
-
-5. **Dark Mode**
-   - Toggle between light and dark themes
-   - Preference saved in browser storage
-
-## 🔄 API Endpoints
-
-### Core Endpoints
-
-- `GET /` - Root endpoint with app status
-- `POST /api/upload` - Upload and process documents (single file)
-- `POST /api/query` - Query the knowledge base with optional AI generation
-- `GET /api/status` - Get vector store statistics
-- `DELETE /api/clear` - Clear all documents from vector store
-
-### API Documentation
-
-- **🌐 Live API Docs**: [https://sera-docs.onrender.com/docs](https://sera-docs.onrender.com/docs) (Interactive Swagger UI)
-- **Local API Docs**: Visit `http://localhost:8000/docs` for local development
-
-### Query Parameters
-
-- `query` (string): Your question
-- `top_k` (int, optional): Number of relevant chunks to retrieve (default: 5)
-- `use_generation` (bool, optional): Enable AI response generation (default: true)
-
-## 🚀 Deployment
-
-### Production Deployment
-
-This project is currently deployed and running live:
-
-- **Frontend**: GitHub Pages at [https://muditisop.github.io/Sera-Docs/](https://muditisop.github.io/Sera-Docs/)
-- **Backend**: Render at [https://sera-docs.onrender.com/](https://sera-docs.onrender.com/)
-
-### Deployment Architecture
-
-1. **Frontend (GitHub Pages)**
-   - Automatic deployment from main branch
-   - Static React build served via GitHub Pages
-   - Custom domain support available
-
-2. **Backend (Render)**
-   - Auto-deployment from GitHub repository
-   - Environment variables configured in Render dashboard
-   - Automatic HTTPS and scaling
-
-### Environment Variables (Production)
-
-For production deployment, ensure these environment variables are set:
-
-```env
-GEMINI_API_KEY=your_production_key
-CORS_ORIGINS=["https://muditisop.github.io"]
-MAX_FILE_SIZE=52428800  # 50MB
-```
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **"Gemini API key not configured"**
-   - Ensure your `.env` file contains a valid `GEMINI_API_KEY`
-   - Restart the backend service after adding the key
-
-2. **File upload fails**
-   - Check file size (max 10MB by default)
-   - Verify file format is supported
-   - Ensure backend is running
-
-3. **No results returned**
-   - Upload relevant documents first
-   - Try more specific queries
-   - Check if documents were processed successfully
-
-### Performance Tips
-
-- For large documents, increase `CHUNK_SIZE` in configuration
-- Adjust `TOP_K_RESULTS` for more/fewer sources
-- Use Docker for consistent environment
-- Voice features work best in Chrome, Edge, or Safari
-- Multi-file uploads process sequentially to avoid server overload
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
-
-### Documentation
-
-We value high-quality documentation. When contributing, please ensure that any new functions, classes, or components are fully documented.
-- **Backend (Python)**: Please use [Google Style Python Docstrings](https://google.github.io/styleguide/pyguide.html#3.8-comments-and-docstrings).
-- **Frontend (React)**: Please use [JSDoc](https://jsdoc.app/) comments for components and functions.
-
-A well-documented codebase is easier for everyone to understand and maintain.
-
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- FastAPI for the excellent web framework
-- Google Gemini 2.5 Flash for generative AI capabilities
-- Sentence Transformers for embeddings
-- FAISS for efficient vector search
-- React and Tailwind CSS for the modern UI
-- Framer Motion for smooth animations
-- Web Speech API for voice features
-
-## 📧 Support
-
-For issues, questions, or suggestions:
-- **🌐 Live Demo**: [https://muditisop.github.io/Sera-Docs/](https://muditisop.github.io/Sera-Docs/)
-- **GitHub Issues**: Open an issue on this repository
-- **API Status**: Check [https://sera-docs.onrender.com/](https://sera-docs.onrender.com/) for backend health
 
 ---
 
-**🎉 Sera Docs is live and ready to help you explore your documents!**
+## 🎨 Screenshots
 
-*Last updated: September 2025 - File upload fixes implemented and deployed*
+<div align="center">
+
+### 🏠 Home Page
+*Beautiful landing page with clear call-to-action*
+
+### 📚 Documentation View
+*Clean, readable documentation with syntax highlighting*
+
+### 🔍 Smart Search
+*Instant search with keyboard shortcuts*
+
+### 🌙 Dark Mode
+*Eye-friendly dark theme for late-night coding*
+
+</div>
+
+---
+
+## 🤝 Contributing
+
+We love contributions! Here's how you can help:
+
+```mermaid
+gitGraph
+    commit id: "Initial commit"
+    branch feature
+    checkout feature
+    commit id: "Add new feature"
+    commit id: "Write tests"
+    checkout main
+    merge feature
+    commit id: "Deploy to production"
+```
+
+### Contribution Process
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/AmazingFeature`)
+3. **Commit** your changes (`git commit -m 'Add some AmazingFeature'`)
+4. **Push** to the branch (`git push origin feature/AmazingFeature`)
+5. **Open** a Pull Request
+
+### Development Guidelines
+
+- Write clean, documented code
+- Follow the existing code style
+- Add tests for new features
+- Update documentation as needed
+- Be respectful and constructive
+
+---
+
+## 📊 Roadmap
+
+- [x] **Phase 1**: Core documentation generation
+- [x] **Phase 2**: GitHub integration
+- [x] **Phase 3**: AI-powered analysis
+- [ ] **Phase 4**: Multi-language support (Python, Java, Go)
+- [ ] **Phase 5**: VS Code extension
+- [ ] **Phase 6**: Collaborative editing
+- [ ] **Phase 7**: API documentation generator
+- [ ] **Phase 8**: Custom theming engine
+
+---
+
+## 🐛 Known Issues & Limitations
+
+- Large repositories (>100MB) may take longer to process
+- Rate limiting on GitHub API for free accounts
+- AI generation requires active internet connection
+- Currently optimized for JavaScript/TypeScript projects
+
+See [Issues](https://github.com/MuditIsOP/Sera-Docs/issues) for a full list of known issues and feature requests.
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 💖 Acknowledgments
+
+- **Anthropic** for the amazing Claude AI API
+- **Vercel** for seamless deployment
+- **Supabase** for the backend infrastructure
+- **The Open Source Community** for inspiration and support
+
+---
+
+## 📬 Contact & Support
+
+<div align="center">
+
+**Have questions? We're here to help!**
+
+[![GitHub Issues](https://img.shields.io/badge/GitHub-Issues-red?style=for-the-badge&logo=github)](https://github.com/MuditIsOP/Sera-Docs/issues)
+[![Email](https://img.shields.io/badge/Email-Support-blue?style=for-the-badge&logo=gmail)](mailto:mudit8sharma@gmail.com)
+
+**Show your support!**
+
+⭐ Star this repo if you find it useful!
+
+</div>
+
+---
+
+<div align="center">
+
+**Built with ❤️ by [MuditIsOP](https://github.com/MuditIsOP)**
+
+*Making documentation beautiful, one repository at a time.*
+
+</div>
